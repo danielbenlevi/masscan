@@ -35,10 +35,10 @@ count_cidr6_bits(struct Range6 range)
     for (i=0; i<64; i++) {
         uint64_t mask = 0xFFFFFFFFffffffffull >> i;
 
-        if ((range.begin.lo & ~mask) == (range.end.lo & ~mask)) {
-            if ((range.begin.lo & mask) == 0 && (range.end.lo & mask) == mask)
-                return (unsigned)i;
-        }
+        if ((range.begin.lo & ~mask) == (range.end.lo & ~mask)
+                && (range.begin.lo & mask) == 0
+                && (range.end.lo & mask) == mask)
+            return (unsigned)i;
     }
 
     return 0;

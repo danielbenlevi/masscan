@@ -10,8 +10,8 @@
 static void
 cert_out_open(struct Output *out, FILE *fp)
 {
-    UNUSEDPARM(out);
-    UNUSEDPARM(fp);
+    (void)out;
+    (void)fp;
 }
 
 
@@ -21,7 +21,7 @@ static void
 cert_out_close(struct Output *out, FILE *fp)
 {    
     UNUSEDPARM(out);
-    fprintf(fp, "{finished: 1}\n");
+    fputs("{finished: 1}\n", fp);
 }
 
 /******************************************************************************
@@ -70,7 +70,7 @@ cert_out_banner(struct Output *out, FILE *fp, time_t timestamp,
     }
     
     printf("-----BEGIN CERTIFICATE-----\n");
-    for (i=0; i<length; i += 72) {
+    for (i=0; i<length; i = i + 72) {
         unsigned len = length - i;
         if (len > 72)
             len = 72;
@@ -89,4 +89,3 @@ const struct OutputType certs_output = {
     cert_out_status,
     cert_out_banner
 };
-

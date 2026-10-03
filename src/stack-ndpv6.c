@@ -11,14 +11,14 @@
 
 static inline void _append(unsigned char *buf, size_t *r_offset, size_t max, unsigned x)
 {
-    if (*r_offset >= max)
+    if (max <= *r_offset)
         return;
     buf[(*r_offset)++] = (unsigned char)x;
 }
 static inline void _append_bytes(unsigned char *buf, size_t *r_offset, size_t max, const void *v_bytes, size_t len)
 {
     const unsigned char *bytes = (const unsigned char *)v_bytes;
-    if (*r_offset + len >= max)
+    if (max <= *r_offset + len)
         return;
     memcpy(buf + *r_offset, bytes, len);
     *r_offset += len;
@@ -27,7 +27,7 @@ static inline void _append_bytes(unsigned char *buf, size_t *r_offset, size_t ma
 static inline void
 _append_short(unsigned char *buf, size_t *offset, size_t max, unsigned num)
 {
-    if (2 > max - *offset) {
+    if (max - *offset < 2) {
         *offset = max;
         return;
     }
@@ -41,7 +41,7 @@ _read_byte(const unsigned char *buf, size_t *offset, size_t max)
     if (*offset + 1 < max) {
         return buf[(*offset)++];
     } else
-        return (unsigned)~0;
+        return ~0u;
 }
 static inline unsigned
 _read_short(const unsigned char *buf, size_t *offset, size_t max)
@@ -52,7 +52,7 @@ _read_short(const unsigned char *buf, size_t *offset, size_t max)
         result |= buf[(*offset)++];
         return result;
     } else
-        return (unsigned)~0;
+        return ~0u;
 }
 
 static inline unsigned
@@ -66,7 +66,7 @@ _read_number(const unsigned char *buf, size_t *offset, size_t max)
         result |= buf[(*offset)++];
         return result;
     } else
-        return (unsigned)~0;
+        return ~0u;
 }
 
 static inline ipv6address_t

@@ -800,7 +800,7 @@ rangelist_count(const struct RangeList *targets)
     unsigned i;
     uint64_t result = 0;
 
-    for (i=0; i<targets->count; i++) {
+    for (i=0; i<targets->count; ++i) {
         result += (uint64_t)targets->list[i].end - (uint64_t)targets->list[i].begin + 1UL;
     }
 

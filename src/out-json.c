@@ -2,6 +2,7 @@
 #include "masscan-app.h"
 #include "masscan-status.h"
 #include "util-safefunc.h"
+#include "util-utf8.h"
 #include <ctype.h>
 
 
@@ -69,24 +70,73 @@ static const char *
 normalize_json_string(const unsigned char *px, size_t length,
                  char *buf, size_t buf_len)
 {
-    size_t i=0;
+    size_t i;
     size_t offset = 0;
-
+    size_t needed = 0;
 
     for (i=0; i<length; i++) {
         unsigned char c = px[i];
 
-        if (isprint(c) && c != '<' && c != '>' && c != '&' && c != '\\' && c != '\"' && c != '\'') {
-            if (offset + 2 < buf_len)
-                buf[offset++] = px[i];
+        if ((c & 0xC0) == 0xC0) {
+            unsigned seqlen = utf8_seqlen(c);
+            needed += 5;
+            i += seqlen - 1;
+        } else if (isprint(c) && c != '<' && c != '>' && c != '&' && c != '\\' && c != '\"' && c != '\'') {
+            needed += 1;
         } else {
-            if (offset + 7 < buf_len) {
+            needed += 6;
+        }
+    }
+
+    if (needed + 1 <= buf_len) {
+        for (i=0; i<length; i++) {
+            unsigned char c = px[i];
+
+            if ((c & 0xC0) == 0xC0) {
+                unsigned seqlen = utf8_seqlen(c);
+                unsigned k;
+                for (k=0; k<seqlen && i<length; k++) {
+                    buf[offset++] = px[i];
+                    i++;
+                }
+                i--; /* compensate for the loop's own i++ */
+            } else if (isprint(c) && c != '<' && c != '>' && c != '&' && c != '\\' && c != '\"' && c != '\'') {
+                buf[offset++] = px[i];
+            } else {
                 buf[offset++] = '\\';
                 buf[offset++] = 'u';
                 buf[offset++] = '0';
                 buf[offset++] = '0';
                 buf[offset++] = "0123456789abcdef"[px[i]>>4];
                 buf[offset++] = "0123456789abcdef"[px[i]&0xF];
+            }
+        }
+    } else {
+        for (i=0; i<length; i++) {
+            unsigned char c = px[i];
+
+            if ((c & 0xC0) == 0xC0) {
+                unsigned seqlen = utf8_seqlen(c);
+                if (offset + 6 < buf_len) {
+                    unsigned k;
+                    for (k=0; k<seqlen && i<length; k++) {
+                        buf[offset++] = px[i];
+                        i++;
+                    }
+                    i--;
+                }
+            } else if (isprint(c) && c != '<' && c != '>' && c != '&' && c != '\\' && c != '\"' && c != '\'') {
+                if (offset + 2 < buf_len)
+                    buf[offset++] = px[i];
+            } else {
+                if (offset + 7 < buf_len) {
+                    buf[offset++] = '\\';
+                    buf[offset++] = 'u';
+                    buf[offset++] = '0';
+                    buf[offset++] = '0';
+                    buf[offset++] = "0123456789abcdef"[px[i]>>4];
+                    buf[offset++] = "0123456789abcdef"[px[i]&0xF];
+                }
             }
         }
     }

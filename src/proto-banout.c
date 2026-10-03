@@ -13,6 +13,7 @@
 */
 #include "proto-banner1.h"
 #include "util-malloc.h"
+#include "util-utf8.h"
 #include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
@@ -202,32 +203,11 @@ banout_append_hexint(struct BannerOutput *banout, unsigned proto, unsigned long 
 void
 banout_append_unicode(struct BannerOutput *banout, unsigned proto, unsigned c)
 {
-    if (c & ~0xFFFF) {
-        unsigned c2;
-        c2 = 0xF0 | ((c>>18)&0x03);
-        banout_append_char(banout, proto, c2);
-        c2 = 0x80 | ((c>>12)&0x3F);
-        banout_append_char(banout, proto, c2);
-        c2 = 0x80 | ((c>> 6)&0x3F);
-        banout_append_char(banout, proto, c2);
-        c2 = 0x80 | ((c>> 0)&0x3F);
-        banout_append_char(banout, proto, c2);
-    } else if (c & ~0x7FF) {
-        unsigned c2;
-        c2 = 0xE0 | ((c>>12)&0x0F);
-        banout_append_char(banout, proto, c2);
-        c2 = 0x80 | ((c>> 6)&0x3F);
-        banout_append_char(banout, proto, c2);
-        c2 = 0x80 | ((c>> 0)&0x3F);
-        banout_append_char(banout, proto, c2);
-    } else if (c & ~0x7f) {
-        unsigned c2;
-        c2 = 0xc0 | ((c>> 6)&0x1F);
-        banout_append_char(banout, proto, c2);
-        c2 = 0x80 | ((c>> 0)&0x3F);
-        banout_append_char(banout, proto, c2);
-    } else
-        banout_append_char(banout, proto, c);
+    unsigned char seq[6];
+    size_t seqlen;
+
+    seqlen = utf8_encode(c, seq);
+    banout_append(banout, proto, seq, seqlen);
 }
 
 

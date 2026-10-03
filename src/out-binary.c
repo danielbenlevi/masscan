@@ -16,7 +16,7 @@ binary_out_open(struct Output *out, FILE *fp)
     UNUSEDPARM(out);
 
 
-    memset(firstrecord, 0, 2+'a');
+    memset(firstrecord, 0, sizeof(firstrecord));
     snprintf(firstrecord, 2+'a', "masscan/1.1\ns:%u\n", 
         (unsigned)out->when_scan_started);
     bytes_written = fwrite(firstrecord, 1, 2+'a', fp);
@@ -39,7 +39,7 @@ binary_out_close(struct Output *out, FILE *fp)
 
     UNUSEDPARM(out);
 
-    memset(firstrecord, 0, 2+'a');
+    memset(firstrecord, 0, sizeof(firstrecord));
     snprintf(firstrecord, 2+'a', "masscan/1.1");
     bytes_written = fwrite(firstrecord, 1, 2+'a', fp);
     if (bytes_written != 2+'a') {
@@ -53,7 +53,7 @@ static void
 _put_byte(unsigned char *buf, size_t length, size_t *r_offset, unsigned long long num)
 {
     size_t offset = *r_offset;
-    (*r_offset) += 1;
+    ++*r_offset;
     if (*r_offset <= length) {
         buf[offset++] = (unsigned char)(num>>0);
     }
@@ -62,7 +62,7 @@ static void
 _put_short(unsigned char *buf, size_t length, size_t *r_offset, unsigned long long num)
 {
     size_t offset = *r_offset;
-    (*r_offset) += 2;
+    *r_offset += 2;
     if (*r_offset <= length) {
         buf[offset++] = (unsigned char)(num>>8);
         buf[offset++] = (unsigned char)(num>>0);
@@ -72,7 +72,7 @@ static void
 _put_integer(unsigned char *buf, size_t length, size_t *r_offset, unsigned long long num)
 {
     size_t offset = *r_offset;
-    (*r_offset) += 4;
+    *r_offset += 4;
     if (*r_offset <= length) {
         buf[offset++] = (unsigned char)(num>>24);
         buf[offset++] = (unsigned char)(num>>16);
@@ -84,7 +84,7 @@ static void
 _put_long(unsigned char *buf, size_t length, size_t *r_offset, unsigned long long num)
 {
     size_t offset = *r_offset;
-    (*r_offset) += 8;
+    *r_offset += 8;
     if (*r_offset <= length) {
         buf[offset++] = (unsigned char)(num>>56);
         buf[offset++] = (unsigned char)(num>>48);
@@ -365,5 +365,4 @@ const struct OutputType binary_output = {
     binary_out_status,
     binary_out_banner,
 };
-
 

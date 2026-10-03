@@ -12,16 +12,16 @@
 static void
 hostonly_out_open(struct Output *out, FILE *fp)
 {
-    UNUSEDPARM(fp);
-    UNUSEDPARM(out);
+    (void)fp;
+    (void)out;
 }
 
 
 static void
 hostonly_out_close(struct Output *out, FILE *fp)
 {
-    UNUSEDPARM(fp);
-    UNUSEDPARM(out);
+    (void)fp;
+    (void)out;
 }
 
 static void
@@ -76,6 +76,5 @@ const struct OutputType hostonly_output = {
     hostonly_out_status,
     hostonly_out_banner
 };
-
 
 

@@ -128,6 +128,7 @@
     <ClCompile Include="..\src\util-logger.c" />
     <ClCompile Include="..\src\util-malloc.c" />
     <ClCompile Include="..\src\util-safefunc.c" />
+    <ClCompile Include="..\src\util-utf8.c" />
     <ClCompile Include="..\src\vulncheck-heartbleed.c" />
     <ClCompile Include="..\src\vulncheck-ntp-monlist.c" />
     <ClCompile Include="..\src\vulncheck-sslv3.c" />
@@ -230,6 +231,7 @@
     <ClInclude Include="..\src\util-logger.h" />
     <ClInclude Include="..\src\util-malloc.h" />
     <ClInclude Include="..\src\util-safefunc.h" />
+    <ClInclude Include="..\src\util-utf8.h" />
     <ClInclude Include="..\src\vulncheck.h" />
     <ClInclude Include="..\src\xring.h" />
   </ItemGroup>

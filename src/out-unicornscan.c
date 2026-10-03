@@ -13,7 +13,7 @@ static void
 unicornscan_out_open(struct Output *out, FILE *fp)
 {
     UNUSEDPARM(out);
-    fprintf(fp, "#masscan\n");
+    fputs("#masscan\n", fp);
 }
 
 
@@ -21,7 +21,7 @@ static void
 unicornscan_out_close(struct Output *out, FILE *fp)
 {
     UNUSEDPARM(out);
-    fprintf(fp, "# end\n");
+    fputs("# end\n", fp);
 }
 
 static void
@@ -90,6 +90,5 @@ const struct OutputType unicornscan_output = {
     unicornscan_out_status,
     unicornscan_out_banner
 };
-
 
 

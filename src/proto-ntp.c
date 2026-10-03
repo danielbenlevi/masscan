@@ -88,9 +88,12 @@ static const char *
 val2string_lookup(const struct Val2String *list, unsigned val)
 {
     unsigned i;
-    for (i=0; list[i].string; i++) {
+
+    i = 0;
+    while (list[i].string) {
         if (list[i].value == val)
             return list[i].string;
+        i++;
     }
     return 0;
 }
@@ -292,7 +295,6 @@ ntp_selftest(void)
     
     return 0;
 }
-
 
 
 

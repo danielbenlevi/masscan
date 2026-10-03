@@ -44,10 +44,9 @@ int massip_pick(const struct MassIP *massip, uint64_t index, ipaddress *addr, un
 
 int massip_has_ip(const struct MassIP *massip, ipaddress ip)
 {
-    if (ip.version == 6)
-        return range6list_is_contains(&massip->ipv6, ip.ipv6);
-    else
-        return rangelist_is_contains(&massip->ipv4, ip.ipv4);
+    return ip.version == 6
+        ? range6list_is_contains(&massip->ipv6, ip.ipv6)
+        : rangelist_is_contains(&massip->ipv4, ip.ipv4);
 }
 
 int massip_has_port(const struct MassIP *massip, unsigned port)
@@ -57,15 +56,15 @@ int massip_has_port(const struct MassIP *massip, unsigned port)
 
 int massip_has_ipv4_targets(const struct MassIP *massip)
 {
-    return massip->ipv4.count != 0;
+    return !!massip->ipv4.count;
 }
 int massip_has_target_ports(const struct MassIP *massip)
 {
-    return massip->ports.count != 0;
+    return !!massip->ports.count;
 }
 int massip_has_ipv6_targets(const struct MassIP *massip)
 {
-    return massip->ipv6.count != 0;
+    return !!massip->ipv6.count;
 }
 
 
@@ -103,10 +102,7 @@ int massip_add_port_string(struct MassIP *targets, const char *string, unsigned 
 {
     unsigned is_error = 0;
     rangelist_parse_ports(&targets->ports, string, &is_error, defaultrange);
-    if (is_error)
-        return 1;
-    else
-        return 0;
+    return is_error != 0;
 }
 
 int massip_selftest(void)
@@ -149,4 +145,3 @@ fail:
     fprintf(stderr, "[-] massip: test fail, line=%d\n", line);
     return 1;
 }
-

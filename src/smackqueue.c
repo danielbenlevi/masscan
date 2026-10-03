@@ -23,7 +23,7 @@ queue_create(void)
 {
     struct Queue *queue;
     queue = (struct Queue *)malloc(sizeof(*queue));
-    if (queue == NULL) {
+    if (!queue) {
         fprintf(stderr, "%s: out of memory error\n", "smack");
         exit(1);
     }
@@ -34,7 +34,7 @@ queue_create(void)
 void
 queue_destroy(struct Queue * queue)
 {
-    if (queue == NULL)
+    if (!queue)
         return;
     while (queue_has_more_items(queue))
         dequeue(queue);
@@ -86,5 +86,5 @@ dequeue(struct Queue *queue)
 
 unsigned queue_has_more_items(struct Queue * queue)
 {
-  return queue->m_head != NULL;
+  return queue->m_head != 0;
 }

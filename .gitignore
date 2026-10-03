@@ -12,3 +12,7 @@ executable
 .programbench/run/
 .programbench/shims/
 .programbench/tmux/
+
+.agents
+.codex
+poc

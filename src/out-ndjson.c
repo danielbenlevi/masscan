@@ -10,8 +10,8 @@
 static void
 ndjson_out_open(struct Output *out, FILE *fp)
 {
-    UNUSEDPARM(out);
-    UNUSEDPARM(fp);
+    (void)out;
+    (void)fp;
 }
 
 
@@ -20,8 +20,8 @@ ndjson_out_open(struct Output *out, FILE *fp)
 static void
 ndjson_out_close(struct Output *out, FILE *fp)
 {
-    UNUSEDPARM(out);
-    UNUSEDPARM(fp); 
+    (void)out;
+    (void)fp; 
 }
 
 //{ ip: "124.53.139.201", ports: [ {port: 443, proto: "tcp", status: "open", reason: "syn-ack", ttl: 48} ] }
@@ -65,7 +65,7 @@ static const char *
 normalize_ndjson_string(const unsigned char *px, size_t length,
                        char *buf, size_t buf_len)
 {
-    size_t i=0;
+    size_t i;
     size_t offset = 0;
 
 

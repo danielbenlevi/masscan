@@ -34,9 +34,11 @@ throttler_start(struct Throttler *throttler, double max_rate)
 
     throttler->max_rate = max_rate;
 
-    for (i=0; i<sizeof(throttler->buckets)/sizeof(throttler->buckets[0]); i++) {
+    i = 0;
+    while (i<sizeof(throttler->buckets)/sizeof(throttler->buckets[0])) {
         throttler->buckets[i].timestamp = pixie_gettime();
         throttler->buckets[i].packet_count = 0;
+        ++i;
     }
 
     throttler->batch_size = 1;

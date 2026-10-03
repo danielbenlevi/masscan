@@ -62,8 +62,8 @@ _checksum_calculate(const void *vbuf, size_t length)
 static unsigned
 _checksum_finish(unsigned sum)
 {
-    sum = (sum >> 16) + (sum & 0xFFFF);
-    sum = (sum >> 16) + (sum & 0xFFFF);
+    sum = (sum & 0xFFFF) + (sum >> 16);
+    sum = (sum & 0xFFFF) + (sum >> 16);
     return (~sum) & 0xFFFF;
 }
 
